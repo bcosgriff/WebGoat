@@ -18,7 +18,8 @@ define(['jquery',
     'goatApp/model/LessonInfoModel',
     'goatApp/view/TitleView',
     'goatApp/model/LessonProgressModel',
-    'goatApp/view/LessonProgressView'
+    'goatApp/view/LessonProgressView',
+    'goatApp/view/LessonOverviewView'
     ], 
     function($,
         _,
@@ -40,18 +41,18 @@ define(['jquery',
         LessonInfoModel,
         TitleView,
         LessonProgressModel,
-        LessonProgressView
-
+        LessonProgressView,
+        LessonOverviewView
     ) {
         'use strict'
-        
-        
+
         var Controller = function(options) {
             this.lessonContent = new LessonContentModel();
             this.lessonProgressModel = new LessonProgressModel();
             this.lessonProgressView = new LessonProgressView(this.lessonProgressModel);
             this.lessonContentView = options.lessonContentView;
             this.developerControlsView = new DeveloperControlsView();
+            this.lessonOverview = new LessonOverviewView();
 
             _.extend(Controller.prototype,Backbone.Events);
 
@@ -79,6 +80,7 @@ define(['jquery',
                 this.solutionView = {};
                 this.sourceView = {};
                 this.lessonHintView = {};
+                this.lessonOverview = {};
                 this.name = name;
             };
 
@@ -92,13 +94,13 @@ define(['jquery',
                 });
 
                 this.listenTo(this.helpControlsView,'hints:show',this.showHints);
+                this.listenTo(this.helpControlsView,'lessonOverview:show',this.showLessonOverview)
                 this.listenTo(this.helpControlsView,'attack:show',this.hideShowAttack);
                 this.listenTo(this.helpControlsView,'solution:show',this.hideShowHelps);
                 this.listenTo(this.helpControlsView,'source:show',this.hideShowHelps);
                 this.listenTo(this.helpControlsView,'lesson:restart',this.restartLesson);
                 this.listenTo(this.developerControlsView, 'dev:labels', this.restartLesson);
                 this.listenTo(this.lessonContentView, 'lesson:complete', this.updateMenu)
-
                 this.listenTo(this,'hints:show',this.onShowHints);
 
                 this.helpControlsView.render();
@@ -123,6 +125,7 @@ define(['jquery',
                     this.solutionView = new SolutionView();
                     this.sourceView = new SourceView();
                     this.lessonHintView = new HintView();
+                    this.lessonOverview = new LessonOverviewView();
                     this.cookieView = new CookieView();
 
                     //TODO: instantiate model with values (not sure why was not working before)
@@ -175,6 +178,10 @@ define(['jquery',
             this.showHints = function() {
                 this.lessonHintView.render();
                 //this.lessonHintView.
+            };
+
+            this.showLessonOverview = function() {
+                this.lessonOverview.render();
             };
 
             this.hideShowAttack = function (options) { // will likely expand this to encompass
