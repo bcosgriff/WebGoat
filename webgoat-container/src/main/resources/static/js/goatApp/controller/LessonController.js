@@ -19,8 +19,9 @@ define(['jquery',
     'goatApp/view/TitleView',
     'goatApp/model/LessonProgressModel',
     'goatApp/view/LessonProgressView',
-    'goatApp/view/LessonOverviewView'
-    ], 
+    'goatApp/view/LessonOverviewView',
+    'goatApp/model/LessonOverviewModel'
+    ],
     function($,
         _,
         Backbone,
@@ -42,7 +43,8 @@ define(['jquery',
         TitleView,
         LessonProgressModel,
         LessonProgressView,
-        LessonOverviewView
+        LessonOverviewView,
+        LessonOverviewModel
     ) {
         'use strict'
 
@@ -50,9 +52,11 @@ define(['jquery',
             this.lessonContent = new LessonContentModel();
             this.lessonProgressModel = new LessonProgressModel();
             this.lessonProgressView = new LessonProgressView(this.lessonProgressModel);
+            this.lessonOverviewModel = new LessonOverviewModel();
+            this.lessonOverview = new LessonOverviewView(this.lessonOverviewModel);
             this.lessonContentView = options.lessonContentView;
             this.developerControlsView = new DeveloperControlsView();
-            this.lessonOverview = new LessonOverviewView();
+
 
             _.extend(Controller.prototype,Backbone.Events);
 
@@ -80,7 +84,6 @@ define(['jquery',
                 this.solutionView = {};
                 this.sourceView = {};
                 this.lessonHintView = {};
-                this.lessonOverview = {};
                 this.name = name;
             };
 
@@ -101,9 +104,11 @@ define(['jquery',
                 this.listenTo(this.helpControlsView,'lesson:restart',this.restartLesson);
                 this.listenTo(this.developerControlsView, 'dev:labels', this.restartLesson);
                 this.listenTo(this.lessonContentView, 'lesson:complete', this.updateMenu)
+                this.listenTo(this.lessonContentView, 'lesson:complete', this.updateLessonOverview)
                 this.listenTo(this,'hints:show',this.onShowHints);
 
                 this.helpControlsView.render();
+                this.lessonOverviewModel.fetch();
 
                 this.titleView.render(this.lessonInfoModel.get('lessonTitle'));
             };
@@ -111,6 +116,10 @@ define(['jquery',
             this.updateMenu = function() {
                 this.trigger('menu:reload')
             };
+
+            this.updateLessonOverview = function() {
+                this.lessonOverviewModel.fetch();
+            }
 
             this.onContentLoaded = function(loadHelps) {
                 this.lessonInfoModel = new LessonInfoModel();
@@ -125,7 +134,6 @@ define(['jquery',
                     this.solutionView = new SolutionView();
                     this.sourceView = new SourceView();
                     this.lessonHintView = new HintView();
-                    this.lessonOverview = new LessonOverviewView();
                     this.cookieView = new CookieView();
 
                     //TODO: instantiate model with values (not sure why was not working before)

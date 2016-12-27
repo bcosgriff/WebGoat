@@ -1,6 +1,5 @@
 define([
-	'backbone',
-	'goatApp/model/AssignmentModel'],
+	'backbone'],
 	function(
 		Backbone) {
 	return Backbone.Collection.extend({

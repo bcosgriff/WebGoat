@@ -10,11 +10,19 @@ function($,
 	AssignmentOverview) {
 	return Backbone.View.extend({
 		el:'#lesson-overview',
-		initialize: function() {
-			this.lessonOverview = new LessonOverviewModel();
-			this.lessonOverview.fetch();
+		 initialize: function (lessonOverviewModel) {
+			this.model = lessonOverviewModel;
+			this.listenTo(this.model, 'change add remove update', this.render);
 			this.hideLessonOverview();
 		},
+
+        showAssignments: function() {
+            this.$el.html('');
+      		this.model.each(function(assignment) {
+      	        var assignmentView = new AssignmentOverview({ model: assignment });
+                this.$el.append(assignmentView.render().el);
+           	}, this);
+        },
 
 		render: function() {
 		    if (this.isVisible()) {
@@ -22,26 +30,13 @@ function($,
         	} else {
         		this.$el.show();
         	}
-        	this.$el.html('');
-            this.toggleLabel();
-       		this.lessonOverview.each(function(assignment) {
-   			    var assignmentView = new AssignmentOverview({ model: assignment });
-      		    this.$el.append(assignmentView.render().el);
-       		}, this);
+        	this.showAssignments();
 
        		return this;
        	},
 
         isVisible: function() {
             return this.$el.is(':visible');
-        },
-
-        toggleLabel: function() {
-            if (this.isVisible()) {
-                $('lesson-overview-button').text('Hide overview');
-            } else {
-                $('lesson-overview-button').text('Lesson overview');
-            }
         },
 
 		hideLessonOverview: function() {
