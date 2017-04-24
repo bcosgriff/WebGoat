@@ -1,0 +1,24 @@
+{
+  "summary": {
+    "title": "WebGoat Threat Model",
+    "owner": "BC",
+    "description": "OWASP WebGoat"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "title": "Diagram 1",
+        "thumbnail": "../public/content/images/thumbnail.jpg",
+        "id": 0
+      }
+    ],
+    "reviewer": "CM"
+  },
+  "location": {
+    "organisation": "bcosgriff",
+    "repo": "WebGoat",
+    "branch": "master",
+    "model": "WebGoat Threat Model"
+  }
+}
